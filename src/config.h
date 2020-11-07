@@ -51,7 +51,7 @@
 
 #define APP_MQTT_BUFFER_SIZE	128
 
-#define MQTT_CLIENTID		"zephyr_publisher"
+#define MQTT_CLIENTID		"zephyr_tester"
 
 /* Set the following to 1 to enable the Bluemix topic format */
 #define APP_BLUEMIX_TOPIC	0

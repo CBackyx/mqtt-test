@@ -147,6 +147,10 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 		      const struct mqtt_evt *evt)
 {
 	int err;
+	uint8_t data[33];
+	int len;
+	int bytes_read;
+	struct mqtt_puback_param puback;
 
 	switch (evt->type) {
 	
@@ -241,10 +245,6 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 		LOG_INF("PUBCOMP packet id: %u",
 			evt->param.pubcomp.message_id);
 
-		break;
-
-	case MQTT_EVT_PINGRESP:
-		LOG_INF("PINGRESP packet");
 		break;
 
 	default:
@@ -526,7 +526,7 @@ static void poll_mqtt(void)
 	int rc;
 
 	while (connected) {
-		rc = wait(SYS_FOREVER_MS);
+		rc = wait(1000); // Will this be too long?
 		if (rc > 0) {
 			mqtt_input(&client_ctx);
 		}
@@ -562,10 +562,11 @@ static void start_app(void)
 	// 		k_sleep(K_MSEC(5000));
 	// 	}
 	// }
-	r = publisher();
+	
+	// r = publisher();
 	try_to_connect(&client_ctx);
 	if (connected) {
-		subscribe(client);
+		subscribe(&client_ctx);
 		poll_mqtt();
 	}
 }
