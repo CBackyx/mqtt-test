@@ -187,7 +187,7 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 
 		break;
 	
-		case MQTT_EVT_PUBLISH:
+	case MQTT_EVT_PUBLISH:
 		len = evt->param.publish.message.payload.len;
 
 		LOG_INF("MQTT publish received %d, %d bytes", evt->result, len);
