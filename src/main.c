@@ -5,6 +5,7 @@
  */
 
 #include <logging/log.h>
+#include <logging/log_ctrl.h>
 LOG_MODULE_REGISTER(net_mqtt_publisher_sample, LOG_LEVEL_DBG);
 
 #include <zephyr.h>
@@ -211,6 +212,9 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 			data[bytes_read] = '\0';
 			LOG_INF("   payload: %s", log_strdup(data));
 			len -= bytes_read;
+			LOG_INF("len = %d", len);
+			LOG_INF("bytes_read = %d", bytes_read);
+			k_sleep(K_MSEC(APP_SLEEP_MSECS));
 		}
 
 		puback.message_id = evt->param.publish.message_id;
@@ -526,11 +530,14 @@ static void poll_mqtt(void)
 	int rc;
 
 	while (connected) {
-		rc = wait(1000); // Will this be too long?
+		rc = wait(500); // Will this be too long?
+		LOG_INF("rc = %d", rc);
 		if (rc > 0) {
+			// LOG_INF("inputing");
 			mqtt_input(&client_ctx);
 		}
 	}
+	LOG_INF("not connected");
 }
 
 static void subscribe(struct mqtt_client *client)
@@ -564,9 +571,12 @@ static void start_app(void)
 	// }
 	
 	// r = publisher();
+	log_panic();
+	LOG_INF("Start APP");
 	try_to_connect(&client_ctx);
 	if (connected) {
 		subscribe(&client_ctx);
+		LOG_INF("poll");
 		poll_mqtt();
 	}
 }
